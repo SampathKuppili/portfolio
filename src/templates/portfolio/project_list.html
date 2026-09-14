@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+{% block meta_description %}Portfolio of projects built with Python, Django, and modern web technologies.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Projects</h1>
+            <p class="section-subtitle">Things I've built</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {# Technology Filter #}
+        {% if technologies %}
+        <div class="flex flex-wrap gap-2 justify-center mb-8 fade-in">
+            <a href="{% url 'portfolio:project_list' %}" class="tech-badge {% if not current_tech %}tech-badge-active{% endif %}">All</a>
+            {% for tech in technologies %}
+            <a href="{% url 'portfolio:project_list' %}?tech={{ tech.slug }}" class="tech-badge {% if current_tech == tech.slug %}tech-badge-active{% endif %}">
+                {{ tech.name }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if projects %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for project in projects %}
+            <div class="fade-in">
+                {% include "components/project_card.html" with project=project %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% include "components/pagination.html" %}
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-folder-open"></i>
+            <p>No projects found{% if current_tech %} for this technology{% endif %}.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

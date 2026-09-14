@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#092328">
+
+    {# SEO #}
+    <title>{% block title %}Portfolio{% endblock %} | {% if site_settings %}{{ site_settings.site_name }}{% else %}Developer Portfolio{% endif %}</title>
+    <meta name="description" content="{% block meta_description %}{% if site_settings %}{{ site_settings.meta_description }}{% else %}Professional Python/Django developer portfolio{% endif %}{% endblock %}">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    {# Open Graph #}
+    <meta property="og:title"
+        content="{% block og_title %}{% if site_settings %}{{ site_settings.site_title }}{% endif %}{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}{% if site_settings %}{{ site_settings.meta_description }}{% endif %}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% block og_image %}{% endblock %}
+
+    {# Favicon #}
+    {% if site_settings and site_settings.favicon %}
+    <link rel="icon" href="{{ site_settings.favicon.url }}">
+    {% endif %}
+
+    {# Fonts: Space Grotesk for headings, Inter for body, JetBrains Mono for labels/code #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {# Tailwind CSS CDN #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['selector', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Space Grotesk', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        paper: '#F3F4F4',
+                        signal: { DEFAULT: '#FC3C3C', dark: '#D9281F' },
+                        ink: '#413333',
+                        teal: '#092328',
+                        violet: '#211832',
+                        primary: { DEFAULT: '#FC3C3C', dark: '#D9281F' },
+                    },
+                },
+            },
+        }
+    </script>
+
+    {# Custom CSS #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {# Inline theme init to prevent flash #}
+    <script>
+            (function () {
+                const stored = localStorage.getItem('theme');
+                if (stored) {
+                    document.documentElement.setAttribute('data-theme', stored);
+                } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            })();
+    </script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    {# Navbar #}
+    {% include "components/navbar.html" %}
+
+    {# Mobile Menu #}
+    {% include "components/mobile_menu.html" %}
+
+    {# Toast Messages #}
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast toast-{{ message.tags|default:'info' }}" role="alert">
+            <i
+                class="fa-solid {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Main Content #}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {# Footer #}
+    {% include "components/footer.html" %}
+
+    {# JavaScript #}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

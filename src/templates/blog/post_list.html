@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{% if current_category %}{{ current_category.name }} — {% endif %}{% if current_tag %}#{{ current_tag.name }} — {% endif %}Blog{% endblock %}
+{% block meta_description %}Technical articles about Python, Django, web development, and software engineering.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">
+                {% if current_category %}{{ current_category.name }}{% elif current_tag %}#{{ current_tag.name }}{% else %}Blog{% endif %}
+            </h1>
+            <p class="section-subtitle">Technical insights and tutorials</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            {# Main Content #}
+            <div class="flex-1">
+                {# Search #}
+                <form action="{% url 'blog:search' %}" method="GET" class="mb-8 fade-in">
+                    <div class="relative">
+                        <input type="text" name="q" placeholder="Search articles..." value="{{ query|default:'' }}" class="form-input pl-10">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);"></i>
+                    </div>
+                </form>
+
+                {% if posts %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for post in posts %}
+                    <div class="fade-in">
+                        {% include "components/blog_card.html" with post=post %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% include "components/pagination.html" %}
+                {% else %}
+                <div class="no-data">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <p>No articles found{% if current_category %} in this category{% endif %}{% if current_tag %} with this tag{% endif %}.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {# Sidebar #}
+            <aside class="lg:w-72 flex-shrink-0">
+                {# Categories #}
+                {% if categories %}
+                <div class="card mb-6 fade-in" style="border: 1px solid var(--border-color);">
+                    <div class="card-body">
+                        <h3 class="font-semibold mb-3" style="color: var(--text-primary);">Categories</h3>
+                        <div class="space-y-2">
+                            {% for cat in categories %}
+                            <a href="{% url 'blog:category' cat.slug %}" class="flex items-center justify-between text-sm py-1 {% if current_category and current_category.slug == cat.slug %}font-semibold{% endif %}" style="color: var(--text-secondary);">
+                                <span>{{ cat.name }}</span>
+                                <i class="fa-solid fa-chevron-right text-xs" style="color: var(--text-muted);"></i>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# Tags #}
+                {% if tags %}
+                <div class="card fade-in" style="border: 1px solid var(--border-color);">
+                    <div class="card-body">
+                        <h3 class="font-semibold mb-3" style="color: var(--text-primary);">Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for tag in tags %}
+                            <a href="{% url 'blog:tag' tag.slug %}" class="tech-badge {% if current_tag and current_tag.slug == tag.slug %}tech-badge-active{% endif %}">
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

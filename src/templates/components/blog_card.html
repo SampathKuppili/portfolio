@@ -1,0 +1,30 @@
+{# Reusable blog card — expects `post` in context #}
+<div class="card blog-card">
+    {% if post.featured_image %}
+    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="blog-thumb" loading="lazy">
+    {% else %}
+    <div class="blog-thumb flex items-center justify-center" style="background: var(--bg-secondary);">
+        <i class="fa-solid fa-newspaper text-3xl" style="color: var(--text-muted);"></i>
+    </div>
+    {% endif %}
+    <div class="card-body">
+        <div class="flex items-center gap-3 mb-2">
+            {% if post.category %}
+            <span class="category-badge">{{ post.category.name }}</span>
+            {% endif %}
+            <span class="text-xs" style="color: var(--text-muted);">
+                <i class="fa-regular fa-clock"></i> {{ post.reading_time }} min read
+            </span>
+        </div>
+        <h3 class="font-semibold text-lg mb-2" style="color: var(--text-primary);">
+            <a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a>
+        </h3>
+        <p class="text-sm mb-3" style="color: var(--text-secondary);">{{ post.excerpt|truncatewords:25 }}</p>
+        <div class="flex items-center justify-between text-xs" style="color: var(--text-muted);">
+            <span>{{ post.published_at|date:"M d, Y" }}</span>
+            <a href="{% url 'blog:post_detail' post.slug %}" class="font-medium" style="color: var(--color-primary);">
+                Read more <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+    </div>
+</div>

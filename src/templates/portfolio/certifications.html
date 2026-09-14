@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Certifications{% endblock %}
+{% block meta_description %}Professional certifications and credentials.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Certifications</h1>
+            <p class="section-subtitle">Professional credentials and achievements</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {% if certifications %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for cert in certifications %}
+            <div class="fade-in">
+                <div class="card" style="border: 1px solid var(--border-color);">
+                    {% if cert.certificate_image %}
+                    <img src="{{ cert.certificate_image.url }}" alt="{{ cert.name }}" class="w-full h-40 object-cover" loading="lazy">
+                    {% else %}
+                    <div class="w-full h-40 flex items-center justify-center" style="background: var(--bg-secondary);">
+                        <i class="fa-solid fa-certificate text-4xl" style="color: var(--color-primary);"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h2 class="font-semibold mb-1" style="color: var(--text-primary);">{{ cert.name }}</h2>
+                        <p class="text-sm font-medium mb-2" style="color: var(--color-primary);">{{ cert.issuing_organization }}</p>
+                        <p class="text-xs mb-2" style="color: var(--text-muted);">
+                            <i class="fa-regular fa-calendar"></i> {{ cert.issue_date|date:"M Y" }}
+                        </p>
+                        {% if cert.credential_id %}
+                        <p class="text-xs" style="color: var(--text-muted);">
+                            ID: {{ cert.credential_id }}
+                        </p>
+                        {% endif %}
+                        {% if cert.credential_url %}
+                        <a href="{{ cert.credential_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost text-sm mt-3">
+                            View Credential <i class="fa-solid fa-external-link-alt text-xs"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-certificate"></i>
+            <p>Certifications coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

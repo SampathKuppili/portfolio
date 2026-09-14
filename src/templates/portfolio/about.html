@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+{% block meta_description %}Learn more about my background, skills, and experience as a Python/Django developer.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">About Me</h1>
+            <p class="section-subtitle">Get to know me better</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {% if profile %}
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-10 fade-in">
+                <div class="flex-shrink-0">
+                    {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="w-56 h-56 rounded-2xl object-cover shadow-lg" style="border: 3px solid var(--color-primary);">
+                    {% else %}
+                    <div class="w-56 h-56 rounded-2xl flex items-center justify-center" style="background: var(--bg-secondary); border: 3px solid var(--border-color);">
+                        <i class="fa-solid fa-user text-5xl" style="color: var(--text-muted);"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold mb-1" style="color: var(--text-primary);">{{ profile.name }}</h2>
+                    <p class="text-lg font-medium mb-4" style="color: var(--color-primary);">{{ profile.designation }}</p>
+                    <div class="prose max-w-none" style="color: var(--text-secondary); line-height: 1.8;">
+                        {{ profile.about|linebreaksbr }}
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 mt-6 text-sm" style="color: var(--text-secondary);">
+                        {% if profile.location %}
+                        <span><i class="fa-solid fa-location-dot" style="color: var(--color-primary);"></i> {{ profile.location }}</span>
+                        {% endif %}
+                        {% if profile.email %}
+                        <span><i class="fa-solid fa-envelope" style="color: var(--color-primary);"></i> {{ profile.email }}</span>
+                        {% endif %}
+                        {% if profile.is_available %}
+                        <span class="hero-badge"><span class="dot"></span> Available for hire</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        {% if profile.resume %}
+                        <a href="{% url 'portfolio:resume_download' %}" class="btn btn-primary">
+                            <i class="fa-solid fa-download"></i> Download Resume
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'contact:contact' %}" class="btn btn-outline">
+                            <i class="fa-solid fa-envelope"></i> Contact Me
+                        </a>
+                    </div>
+
+                    {% include "components/social_links.html" with profile=profile %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-user-slash"></i>
+            <p>Profile information coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

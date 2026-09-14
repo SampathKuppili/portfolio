@@ -1,0 +1,41 @@
+<footer class="footer">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {# Brand #}
+            <div>
+                <a href="{% url 'portfolio:home' %}" class="flex items-center gap-2 mb-3">
+                    <span class="text-xl font-bold gradient-text">&lt;/&gt;</span>
+                    <span class="font-bold text-lg" style="color: var(--text-primary);">
+                        {% if site_settings %}{{ site_settings.site_name }}{% else %}Portfolio{% endif %}
+                    </span>
+                </a>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                    Professional Python/Django developer building clean, scalable web applications.
+                </p>
+            </div>
+
+            {# Quick Links #}
+            <div>
+                <h4 class="font-semibold mb-3" style="color: var(--text-primary);">Quick Links</h4>
+                <div class="flex flex-col gap-2">
+                    <a href="{% url 'portfolio:about' %}" class="footer-link text-sm">About</a>
+                    <a href="{% url 'portfolio:project_list' %}" class="footer-link text-sm">Projects</a>
+                    <a href="{% url 'blog:post_list' %}" class="footer-link text-sm">Blog</a>
+                    <a href="{% url 'contact:contact' %}" class="footer-link text-sm">Contact</a>
+                </div>
+            </div>
+
+            {# Social Links #}
+            <div>
+                <h4 class="font-semibold mb-3" style="color: var(--text-primary);">Connect</h4>
+                {% include "components/social_links.html" %}
+            </div>
+        </div>
+
+        <div class="border-t pt-6 text-center" style="border-color: var(--border-color);">
+            <p style="color: var(--text-muted); font-size: 0.85rem;">
+                &copy; {% now "Y" %} {% if site_settings %}{{ site_settings.site_name }}{% else %}Portfolio{% endif %}. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>

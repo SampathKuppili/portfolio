@@ -1,0 +1,37 @@
+{% load static %}
+<nav class="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            {# Logo #}
+            <a href="{% url 'portfolio:home' %}" class="flex items-center gap-2">
+                <span class="text-xl font-bold gradient-text">&lt;/&gt;</span>
+                <span class="font-bold text-lg" style="color: var(--text-primary);">
+                    {% if site_settings %}{{ site_settings.site_name }}{% else %}Portfolio{% endif %}
+                </span>
+            </a>
+
+            {# Desktop Nav #}
+            <div class="nav-links hidden md:flex items-center gap-6">
+                <a href="{% url 'portfolio:home' %}" class="nav-link">Home</a>
+                <a href="{% url 'portfolio:about' %}" class="nav-link">About</a>
+                <a href="{% url 'portfolio:project_list' %}" class="nav-link">Projects</a>
+                <a href="{% url 'blog:post_list' %}" class="nav-link">Blog</a>
+                <a href="{% url 'contact:contact' %}" class="nav-link">Contact</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+
+            {# Mobile: theme toggle + hamburger #}
+            <div class="flex items-center gap-3 md:hidden">
+                <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle theme"
+                        onclick="document.getElementById('theme-toggle').click()">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button id="hamburger" class="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>

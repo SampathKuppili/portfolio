@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Skills{% endblock %}
+{% block meta_description %}My technical skills and proficiency levels across backend, frontend, databases, DevOps, and more.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Technical Skills</h1>
+            <p class="section-subtitle">Technologies and tools I work with</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {% if skill_categories %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for category in skill_categories %}
+            <div class="fade-in">
+                <div class="card" style="border: 1px solid var(--border-color);">
+                    <div class="card-body">
+                        <h2 class="font-semibold text-lg mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background: rgba(252,60,60,0.1); color: var(--color-primary);">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </span>
+                            {{ category.name }}
+                        </h2>
+                        <div class="space-y-3">
+                            {% for skill in category.skills.all %}
+                            {% if skill.is_active %}
+                            <div class="skill-card">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium text-sm" style="color: var(--text-primary);">{{ skill.name }}</span>
+                                    <span class="text-xs font-medium" style="color: var(--color-primary);">{{ skill.proficiency }}%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" data-progress="{{ skill.proficiency }}"></div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-code"></i>
+            <p>Skills information coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

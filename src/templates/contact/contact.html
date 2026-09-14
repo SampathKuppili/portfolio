@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Contact{% endblock %}
+{% block meta_description %}Get in touch — send me a message about projects, opportunities, or collaboration.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Get In Touch</h1>
+            <p class="section-subtitle">I'd love to hear from you</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-12 max-w-5xl mx-auto">
+            {# Contact Form #}
+            <div class="flex-1 fade-in">
+                <div class="card" style="border: 1px solid var(--border-color);">
+                    <div class="card-body p-6 md:p-8">
+                        <h2 class="text-xl font-semibold mb-6" style="color: var(--text-primary);">Send a Message</h2>
+                        <form method="POST" action="{% url 'contact:contact' %}" id="contact-form">
+                            {% csrf_token %}
+
+                            {# Honeypot #}
+                            <div style="display: none;">
+                                {{ form.honeypot }}
+                            </div>
+
+                            <div class="space-y-5">
+                                <div>
+                                    <label for="contact-name" class="form-label">Name *</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                    <p class="form-error">{{ form.name.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <label for="contact-email" class="form-label">Email *</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <p class="form-error">{{ form.email.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <label for="contact-subject" class="form-label">Subject *</label>
+                                    {{ form.subject }}
+                                    {% if form.subject.errors %}
+                                    <p class="form-error">{{ form.subject.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <label for="contact-message" class="form-label">Message *</label>
+                                    {{ form.message }}
+                                    {% if form.message.errors %}
+                                    <p class="form-error">{{ form.message.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-full justify-center">
+                                    <i class="fa-solid fa-paper-plane"></i> Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {# Contact Info Sidebar #}
+            <div class="lg:w-80 fade-in">
+                <div class="space-y-6">
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(252,60,60,0.1); color: var(--color-primary);">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm" style="color: var(--text-primary);">Email</h3>
+                                    {% if profile %}
+                                    <p class="text-sm" style="color: var(--text-secondary);">{{ profile.email }}</p>
+                                    {% else %}
+                                    <p class="text-sm" style="color: var(--text-muted);">—</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if profile and profile.phone %}
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(252,60,60,0.1); color: var(--color-primary);">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm" style="color: var(--text-primary);">Phone</h3>
+                                    <p class="text-sm" style="color: var(--text-secondary);">{{ profile.phone }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if profile and profile.location %}
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(252,60,60,0.1); color: var(--color-primary);">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-sm" style="color: var(--text-primary);">Location</h3>
+                                    <p class="text-sm" style="color: var(--text-secondary);">{{ profile.location }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# Social Links #}
+                    {% if profile %}
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <h3 class="font-semibold text-sm mb-3" style="color: var(--text-primary);">Connect With Me</h3>
+                            {% include "components/social_links.html" with profile=profile %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

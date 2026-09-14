@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }}{% endblock %}
+{% block meta_description %}{{ project.short_description }}{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {# Breadcrumb #}
+        <nav class="mb-6 text-sm fade-in" style="color: var(--text-muted);">
+            <a href="{% url 'portfolio:project_list' %}" class="hover-primary">Projects</a>
+            <i class="fa-solid fa-chevron-right text-xs mx-2"></i>
+            <span style="color: var(--text-primary);">{{ project.title }}</span>
+        </nav>
+
+        <div class="fade-in">
+            {# Header #}
+            <h1 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--text-primary);">{{ project.title }}</h1>
+            <p class="text-lg mb-6" style="color: var(--text-secondary);">{{ project.short_description }}</p>
+
+            {# Technologies #}
+            <div class="flex flex-wrap gap-2 mb-6">
+                {% for tech in project.technologies.all %}
+                <span class="tech-badge">{{ tech.name }}</span>
+                {% endfor %}
+            </div>
+
+            {# Links #}
+            <div class="flex gap-3 mb-8">
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                    <i class="fa-brands fa-github"></i> View Source
+                </a>
+                {% endif %}
+                {% if project.live_url %}
+                <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    <i class="fa-solid fa-external-link-alt"></i> Live Demo
+                </a>
+                {% endif %}
+            </div>
+
+            {# Thumbnail #}
+            {% if project.thumbnail %}
+            <div class="rounded-xl overflow-hidden mb-8" style="border: 1px solid var(--border-color);">
+                <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="w-full" loading="lazy">
+            </div>
+            {% endif %}
+
+            {# Description #}
+            <div class="prose max-w-none mb-8" style="color: var(--text-secondary); line-height: 1.8;">
+                {{ project.description|linebreaksbr }}
+            </div>
+
+            {# Gallery #}
+            {% if project.images.all %}
+            <h2 class="text-xl font-bold mb-4" style="color: var(--text-primary);">Screenshots</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {% for img in project.images.all %}
+                <div class="rounded-lg overflow-hidden" style="border: 1px solid var(--border-color);">
+                    <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="w-full" loading="lazy">
+                    {% if img.caption %}
+                    <p class="text-sm px-3 py-2" style="color: var(--text-muted);">{{ img.caption }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Dates #}
+            {% if project.start_date %}
+            <div class="text-sm" style="color: var(--text-muted);">
+                <i class="fa-regular fa-calendar"></i>
+                {{ project.start_date|date:"M Y" }}{% if project.end_date %} — {{ project.end_date|date:"M Y" }}{% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        {# Back link #}
+        <div class="mt-10">
+            <a href="{% url 'portfolio:project_list' %}" class="btn btn-ghost">
+                <i class="fa-solid fa-arrow-left"></i> Back to Projects
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,100 @@
+# ===========================
+# Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyo
+*.pyd
+.Python
+
+# ===========================
+# Virtual Environment
+# ===========================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ===========================
+# Django
+# ===========================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+db.sqlite3-shm
+db.sqlite3-wal
+media/
+media_root/
+staticfiles/
+static_root/
+celerybeat-schedule
+celerybeat.pid
+
+# ===========================
+# Environment & Secrets
+# ===========================
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.crt
+
+# ===========================
+# IDE / Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.project
+.pydevproject
+.settings/
+
+# ===========================
+# Distribution / Packaging
+# ===========================
+dist/
+build/
+*.egg-info/
+*.egg
+eggs/
+.eggs/
+
+# ===========================
+# Testing / Code Quality
+# ===========================
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.cache/
+
+# ===========================
+# Frontend / Node (if applicable)
+# ===========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===========================
+# Misc / Temporary Files
+# ===========================
+*.bak
+*.tmp
+*.temp

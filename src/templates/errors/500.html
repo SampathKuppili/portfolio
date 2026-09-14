@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}500 — Server Error{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div>
+        <div class="error-code">500</div>
+        <h1 class="text-2xl font-bold mt-4 mb-2" style="color: var(--text-primary);">Server Error</h1>
+        <p class="mb-6" style="color: var(--text-secondary);">Something went wrong on our end. Please try again later.</p>
+        <a href="/" class="btn btn-primary">
+            <i class="fa-solid fa-home"></i> Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}

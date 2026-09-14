@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Education{% endblock %}
+{% block meta_description %}Academic background and educational qualifications.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Education</h1>
+            <p class="section-subtitle">Academic background</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {% if education_list %}
+        <div class="max-w-3xl mx-auto">
+            <div class="timeline">
+                {% for edu in education_list %}
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot"></div>
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                                <div>
+                                    <h2 class="font-semibold text-lg" style="color: var(--text-primary);">{{ edu.degree }}</h2>
+                                    <p class="font-medium" style="color: var(--color-primary);">{{ edu.institution }}</p>
+                                    {% if edu.field_of_study %}
+                                    <p class="text-sm" style="color: var(--text-muted);">{{ edu.field_of_study }}</p>
+                                    {% endif %}
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(252,60,60,0.1); color: var(--color-primary); font-family: 'JetBrains Mono', monospace;">
+                                    {{ edu.start_year }} — {% if edu.end_year %}{{ edu.end_year }}{% else %}Present{% endif %}
+                                </span>
+                            </div>
+                            {% if edu.description %}
+                            <p class="text-sm mt-2" style="color: var(--text-secondary);">{{ edu.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <p>Education information coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

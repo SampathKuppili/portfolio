@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Experience{% endblock %}
+{% block meta_description %}Professional work experience and career journey as a Python/Django developer.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Professional Experience</h1>
+            <p class="section-subtitle">My career journey</p>
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        {% if experiences %}
+        <div class="max-w-3xl mx-auto">
+            <div class="timeline">
+                {% for exp in experiences %}
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot {% if exp.is_current %}current{% endif %}"></div>
+                    <div class="card" style="border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                                <div>
+                                    <h2 class="font-semibold text-lg" style="color: var(--text-primary);">{{ exp.job_title }}</h2>
+                                    <p class="font-medium" style="color: var(--color-primary);">{{ exp.company_name }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(252,60,60,0.1); color: var(--color-primary); font-family: 'JetBrains Mono', monospace;">
+                                        {{ exp.start_date|date:"M Y" }} — {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}
+                                    </span>
+                                    <p class="text-xs mt-1" style="color: var(--text-muted);">{{ exp.duration }}</p>
+                                </div>
+                            </div>
+                            {% if exp.location %}
+                            <p class="text-sm mb-3" style="color: var(--text-muted);">
+                                <i class="fa-solid fa-location-dot"></i> {{ exp.location }}
+                            </p>
+                            {% endif %}
+                            {% if exp.description %}
+                            <p class="text-sm mb-3" style="color: var(--text-secondary);">{{ exp.description }}</p>
+                            {% endif %}
+                            {% if exp.points.all %}
+                            <ul class="space-y-1.5">
+                                {% for point in exp.points.all %}
+                                <li class="flex items-start gap-2 text-sm" style="color: var(--text-secondary);">
+                                    <i class="fa-solid fa-chevron-right text-xs mt-1.5" style="color: var(--color-primary);"></i>
+                                    {{ point.description }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-briefcase"></i>
+            <p>Experience information coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

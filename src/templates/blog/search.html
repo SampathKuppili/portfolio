@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% if query %}: {{ query }}{% endif %}{% endblock %}
+{% block meta_description %}Search blog articles.{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 7rem;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-header text-center fade-in">
+            <h1 class="section-title">Search Results</h1>
+            {% if query %}
+            <p class="section-subtitle">Results for "{{ query }}"</p>
+            {% endif %}
+            <div class="section-line mx-auto"></div>
+        </div>
+
+        <div class="max-w-2xl mx-auto mb-8 fade-in">
+            <form action="{% url 'blog:search' %}" method="GET">
+                <div class="relative">
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search articles..." class="form-input pl-10">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);"></i>
+                </div>
+            </form>
+        </div>
+
+        {% if posts %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for post in posts %}
+            <div class="fade-in">
+                {% include "components/blog_card.html" with post=post %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% include "components/pagination.html" %}
+        {% elif query %}
+        <div class="no-data">
+            <i class="fa-solid fa-search"></i>
+            <p>No articles found for "{{ query }}".</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

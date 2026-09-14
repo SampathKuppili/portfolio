@@ -1,0 +1,12 @@
+{# Renders social link icons from the active profile #}
+{% if profile and profile.social_links.all %}
+<div class="flex gap-3 flex-wrap">
+    {% for link in profile.social_links.all %}
+    {% if link.is_active %}
+    <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="social-icon" title="{{ link.get_platform_display }}">
+        <i class="{{ link.icon_class }}"></i>
+    </a>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
