@@ -119,32 +119,52 @@ applications.{% endblock %}
             <div class="section-line mx-auto"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {# SVG gradient definition (shared by all rings) #}
+        <svg width="0" height="0" aria-hidden="true">
+            <defs>
+                <linearGradient id="skill-ring-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--color-primary)" />
+                    <stop offset="100%" stop-color="var(--color-accent)" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        {# Category Tabs #}
+        <div class="skills-tabs fade-in" id="skills-tabs">
+            <button class="skills-tab active" data-category="all">
+                <i class="fa-solid fa-border-all"></i> All
+            </button>
             {% for category in skill_categories %}
-            <div class="fade-in">
-                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2" style="color: var(--text-primary);">
-                    <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
-                        style="background: rgba(252,60,60,0.1); color: var(--color-primary);">
-                        <i class="fa-solid fa-layer-group"></i>
+            <button class="skills-tab" data-category="{{ category.slug }}">
+                {{ category.name }}
+            </button>
+            {% endfor %}
+        </div>
+
+        {# Skills Icon Grid #}
+        <div class="skills-grid" id="skills-grid">
+            {% for category in skill_categories %}
+            {% for skill in category.skills.all %}
+            {% if skill.is_active %}
+            <div class="skill-icon-card fade-in" data-category="{{ category.slug }}">
+                <div class="skill-icon-glow"></div>
+                <div class="skill-ring-wrapper">
+                    <svg class="skill-ring-svg" viewBox="0 0 72 72">
+                        <circle class="skill-ring-bg" cx="36" cy="36" r="30"></circle>
+                        <circle class="skill-ring-progress" cx="36" cy="36" r="30"
+                            stroke-dasharray="188.5"
+                            stroke-dashoffset="188.5"
+                            data-progress="{{ skill.proficiency }}"></circle>
+                    </svg>
+                    <span class="skill-ring-icon">
+                        <i class="{{ skill.resolved_icon }}"></i>
                     </span>
-                    {{ category.name }}
-                </h3>
-                <div class="space-y-3">
-                    {% for skill in category.skills.all %}
-                    {% if skill.is_active %}
-                    <div class="skill-card">
-                        <div class="flex justify-between items-center">
-                            <span class="font-medium text-sm" style="color: var(--text-primary);">{{ skill.name }}</span>
-                            <span class="text-xs font-medium" style="color: var(--color-primary); font-family: 'JetBrains Mono', monospace;">{{ skill.proficiency }}%</span>
-                        </div>
-                        <div class="skill-progress">
-                            <div class="skill-progress-bar" data-progress="{{ skill.proficiency }}"></div>
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
                 </div>
+                <span class="skill-icon-name">{{ skill.name }}</span>
+                <span class="skill-icon-pct">{{ skill.proficiency }}%</span>
             </div>
+            {% endif %}
+            {% endfor %}
             {% endfor %}
         </div>
 
@@ -297,9 +317,25 @@ applications.{% endblock %}
             <div class="section-line mx-auto"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {# Project Type Filter Tabs #}
+        <div class="project-filter-tabs fade-in" id="project-filter-tabs">
+            <button class="project-filter-tab active" data-filter="all">
+                <i class="fa-solid fa-border-all"></i> All
+            </button>
+            <button class="project-filter-tab" data-filter="company">
+                <i class="fa-solid fa-building"></i> Company Projects
+            </button>
+            <button class="project-filter-tab" data-filter="personal">
+                <i class="fa-solid fa-user"></i> Personal Projects
+            </button>
+            <button class="project-filter-tab" data-filter="wordpress">
+                <i class="fa-brands fa-wordpress"></i> WordPress Websites
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid" style="position: relative;">
             {% for project in featured_projects %}
-            <div class="fade-in">
+            <div class="fade-in project-card-wrapper" data-type="{{ project.project_type }}">
                 {% include "components/project_card.html" with project=project %}
             </div>
             {% endfor %}

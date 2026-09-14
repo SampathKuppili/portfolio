@@ -34,7 +34,7 @@ class ExperiencePointInline(admin.TabularInline):
 class SkillInline(admin.TabularInline):
     model = Skill
     extra = 2
-    fields = ('name', 'proficiency', 'order', 'is_active')
+    fields = ('name', 'icon_class', 'proficiency', 'order', 'is_active')
 
 
 class ProjectImageInline(admin.TabularInline):
@@ -114,8 +114,8 @@ class TechnologyAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_featured', 'is_active', 'order', 'created_at')
-    list_filter = ('is_featured', 'is_active', 'technologies')
+    list_display = ('title', 'project_type', 'is_featured', 'is_active', 'order', 'created_at')
+    list_filter = ('project_type', 'is_featured', 'is_active', 'technologies')
     search_fields = ('title', 'short_description')
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('technologies',)
@@ -129,7 +129,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('technologies', 'github_url', 'live_url'),
         }),
         ('Dates & Status', {
-            'fields': ('start_date', 'end_date', 'is_featured', 'is_active', 'order'),
+            'fields': ('project_type', 'start_date', 'end_date', 'is_featured', 'is_active', 'order'),
         }),
         ('Timestamps', {
             'classes': ('collapse',),

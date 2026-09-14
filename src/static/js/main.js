@@ -21,11 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
         initNavbarScrollEffects();
         initParallaxElements();
         initSkillAnimationsGSAP();
+        initSkillRings();
     } else {
         // Fallback to IntersectionObserver
         initScrollAnimations();
         initSkillAnimations();
+        initSkillRingsFallback();
     }
+
+    // Interactive tabs & filters (work with or without GSAP)
+    initSkillTabs();
+    initProjectFilters();
 
     // Desktop-only effects
     if (window.matchMedia('(pointer: fine)').matches && window.innerWidth > 1024) {
@@ -559,5 +565,243 @@ function initNavActiveState() {
         if (href === path || (href !== '/' && path.startsWith(href))) {
             link.classList.add('active');
         }
+    });
+}
+
+/* ============================================================
+   SKILL TABS — category filter with animation
+   ============================================================ */
+function initSkillTabs() {
+    const tabsContainer = document.getElementById('skills-tabs');
+    const grid = document.getElementById('skills-grid');
+    if (!tabsContainer || !grid) return;
+
+    const tabs = tabsContainer.querySelectorAll('.skills-tab');
+    const cards = grid.querySelectorAll('.skill-icon-card');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const category = tab.getAttribute('data-category');
+
+            if (typeof gsap !== 'undefined') {
+                // GSAP animated filter
+                const toHide = [];
+                const toShow = [];
+
+                cards.forEach(card => {
+                    const match = category === 'all' || card.getAttribute('data-category') === category;
+                    if (match) {
+                        toShow.push(card);
+                    } else {
+                        toHide.push(card);
+                    }
+                });
+
+                // Animate out
+                if (toHide.length) {
+                    gsap.to(toHide, {
+                        opacity: 0,
+                        scale: 0.9,
+                        y: 10,
+                        duration: 0.25,
+                        stagger: 0.02,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            toHide.forEach(c => c.style.display = 'none');
+                        }
+                    });
+                }
+
+                // Animate in
+                setTimeout(() => {
+                    toShow.forEach(c => {
+                        c.style.display = '';
+                    });
+                    gsap.fromTo(toShow,
+                        { opacity: 0, scale: 0.9, y: 15 },
+                        {
+                            opacity: 1,
+                            scale: 1,
+                            y: 0,
+                            duration: 0.4,
+                            stagger: 0.04,
+                            ease: 'power3.out',
+                        }
+                    );
+                    // Re-animate rings for visible cards
+                    animateVisibleRings(toShow);
+                }, toHide.length ? 280 : 0);
+
+            } else {
+                // Fallback — simple show/hide
+                cards.forEach(card => {
+                    const match = category === 'all' || card.getAttribute('data-category') === category;
+                    card.style.display = match ? '' : 'none';
+                    card.style.opacity = match ? '1' : '0';
+                });
+            }
+        });
+    });
+}
+
+/* ============================================================
+   SKILL RINGS — GSAP scroll-triggered circle animation
+   ============================================================ */
+function initSkillRings() {
+    const rings = document.querySelectorAll('.skill-ring-progress');
+    if (!rings.length) return;
+
+    const CIRCUMFERENCE = 2 * Math.PI * 30; // r=30 → ≈188.5
+
+    rings.forEach(ring => {
+        const progress = parseInt(ring.getAttribute('data-progress'), 10) || 0;
+        const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+
+        // Start fully hidden
+        ring.style.strokeDasharray = CIRCUMFERENCE;
+        ring.style.strokeDashoffset = CIRCUMFERENCE;
+
+        gsap.to(ring, {
+            strokeDashoffset: offset,
+            duration: 1.4,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: ring,
+                start: 'top 90%',
+                once: true,
+            },
+        });
+    });
+}
+
+/* Helper: re-animate rings after tab switch */
+function animateVisibleRings(cards) {
+    const CIRCUMFERENCE = 2 * Math.PI * 30;
+    cards.forEach(card => {
+        const ring = card.querySelector('.skill-ring-progress');
+        if (!ring) return;
+        const progress = parseInt(ring.getAttribute('data-progress'), 10) || 0;
+        const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+
+        // Reset then animate
+        ring.style.strokeDashoffset = CIRCUMFERENCE;
+        if (typeof gsap !== 'undefined') {
+            gsap.to(ring, {
+                strokeDashoffset: offset,
+                duration: 1.0,
+                ease: 'power3.out',
+                delay: 0.15,
+            });
+        } else {
+            setTimeout(() => { ring.style.strokeDashoffset = offset; }, 50);
+        }
+    });
+}
+
+/* Fallback: IntersectionObserver ring animation */
+function initSkillRingsFallback() {
+    const CIRCUMFERENCE = 2 * Math.PI * 30;
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const ring = entry.target;
+                    const progress = parseInt(ring.getAttribute('data-progress'), 10) || 0;
+                    const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+                    ring.style.strokeDashoffset = offset;
+                    observer.unobserve(ring);
+                }
+            });
+        },
+        { threshold: 0.3 }
+    );
+
+    document.querySelectorAll('.skill-ring-progress').forEach(ring => {
+        ring.style.strokeDasharray = CIRCUMFERENCE;
+        ring.style.strokeDashoffset = CIRCUMFERENCE;
+        observer.observe(ring);
+    });
+}
+
+/* ============================================================
+   PROJECT FILTERS — client-side category toggle
+   ============================================================ */
+function initProjectFilters() {
+    const tabsContainer = document.getElementById('project-filter-tabs');
+    const grid = document.getElementById('projects-grid');
+    if (!tabsContainer || !grid) return;
+
+    const tabs = tabsContainer.querySelectorAll('.project-filter-tab');
+    const cards = grid.querySelectorAll('.project-card-wrapper');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const filter = tab.getAttribute('data-filter');
+
+            if (typeof gsap !== 'undefined') {
+                const toHide = [];
+                const toShow = [];
+
+                cards.forEach(card => {
+                    const match = filter === 'all' || card.getAttribute('data-type') === filter;
+                    if (match) {
+                        toShow.push(card);
+                    } else {
+                        toHide.push(card);
+                    }
+                });
+
+                // Animate out hidden cards
+                if (toHide.length) {
+                    gsap.to(toHide, {
+                        opacity: 0,
+                        scale: 0.92,
+                        y: 10,
+                        duration: 0.25,
+                        stagger: 0.03,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            toHide.forEach(c => {
+                                c.style.display = 'none';
+                            });
+                        }
+                    });
+                }
+
+                // Animate in matching cards
+                setTimeout(() => {
+                    toShow.forEach(c => {
+                        c.style.display = '';
+                    });
+                    gsap.fromTo(toShow,
+                        { opacity: 0, scale: 0.92, y: 15 },
+                        {
+                            opacity: 1,
+                            scale: 1,
+                            y: 0,
+                            duration: 0.4,
+                            stagger: 0.05,
+                            ease: 'power3.out',
+                        }
+                    );
+                }, toHide.length ? 280 : 0);
+
+            } else {
+                // Simple fallback
+                cards.forEach(card => {
+                    const match = filter === 'all' || card.getAttribute('data-type') === filter;
+                    card.style.display = match ? '' : 'none';
+                    card.style.opacity = match ? '1' : '0';
+                });
+            }
+        });
     });
 }

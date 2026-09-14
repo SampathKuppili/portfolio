@@ -131,12 +131,47 @@ class SkillCategory(models.Model):
 class Skill(models.Model):
     """Individual technical skill with proficiency level."""
 
+    # Mapping of common skill names to Devicon / Font Awesome icon classes
+    ICON_MAP = {
+        'python': 'devicon-python-plain',
+        'django': 'devicon-django-plain',
+        'django rest framework': 'devicon-djangorest-plain',
+        'fastapi': 'devicon-fastapi-plain',
+        'celery': 'fa-solid fa-leaf',
+        'postgresql': 'devicon-postgresql-plain',
+        'mysql': 'devicon-mysql-plain',
+        'redis': 'devicon-redis-plain',
+        'sqlite': 'devicon-sqlite-plain',
+        'mongodb': 'devicon-mongodb-plain',
+        'html/css': 'devicon-html5-plain',
+        'html': 'devicon-html5-plain',
+        'css': 'devicon-css3-plain',
+        'javascript': 'devicon-javascript-plain',
+        'bootstrap': 'devicon-bootstrap-plain',
+        'tailwind css': 'devicon-tailwindcss-original',
+        'htmx': 'fa-solid fa-bolt',
+        'docker': 'devicon-docker-plain',
+        'git': 'devicon-git-plain',
+        'linux': 'devicon-linux-plain',
+        'nginx': 'devicon-nginx-original',
+        'ci/cd': 'fa-solid fa-arrows-spin',
+        'vs code': 'devicon-vscode-plain',
+        'postman': 'devicon-postman-plain',
+        'jira': 'devicon-jira-plain',
+        'swagger': 'devicon-swagger-plain',
+    }
+
     category = models.ForeignKey(
         SkillCategory,
         on_delete=models.CASCADE,
         related_name='skills',
     )
     name = models.CharField(max_length=100)
+    icon_class = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Optional CSS icon class (e.g. devicon-python-plain). Auto-detected if blank.",
+    )
     proficiency = models.PositiveIntegerField(
         default=50,
         help_text="Proficiency level (1–100).",
@@ -148,6 +183,13 @@ class Skill(models.Model):
         ordering = ['order', 'name']
         verbose_name = 'Skill'
         verbose_name_plural = 'Skills'
+
+    @property
+    def resolved_icon(self):
+        """Return the icon class — custom if set, otherwise auto-detect from name."""
+        if self.icon_class:
+            return self.icon_class
+        return self.ICON_MAP.get(self.name.lower(), 'fa-solid fa-code')
 
     def __str__(self):
         return f"{self.name} ({self.category.name})"
@@ -282,6 +324,12 @@ class Technology(models.Model):
 class Project(models.Model):
     """Portfolio project showcase."""
 
+    PROJECT_TYPE_CHOICES = [
+        ('company', 'Company Project'),
+        ('personal', 'Personal Project'),
+        ('wordpress', 'WordPress Website'),
+    ]
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     short_description = models.TextField(
@@ -300,6 +348,12 @@ class Project(models.Model):
         Technology,
         blank=True,
         related_name='projects',
+    )
+    project_type = models.CharField(
+        max_length=20,
+        choices=PROJECT_TYPE_CHOICES,
+        default='personal',
+        help_text="Category for filtering: Company, Personal, or WordPress.",
     )
     github_url = models.URLField(blank=True)
     live_url = models.URLField(blank=True)
