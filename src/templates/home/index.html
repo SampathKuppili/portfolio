@@ -7,6 +7,11 @@ applications.{% endblock %}
 {% block content %}
 {# ===== HERO SECTION ===== #}
 <section class="hero-section">
+    {# Liquid morphing blobs #}
+    <div class="liquid-blob liquid-blob-1" aria-hidden="true"></div>
+    <div class="liquid-blob liquid-blob-2" aria-hidden="true"></div>
+    <div class="liquid-blob liquid-blob-3" aria-hidden="true"></div>
+
     <div class="hero-glyphs" aria-hidden="true">
         <span class="glyph glyph-1">def</span>
         <span class="glyph glyph-2">{ }</span>
@@ -69,6 +74,13 @@ applications.{% endblock %}
     </div>
 </section>
 
+{# ===== WAVE DIVIDER: Hero → About ===== #}
+<div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,30 1440,35 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
+
 {# ===== ABOUT PREVIEW ===== #}
 {% if profile %}
 <section class="section" style="background: var(--bg-secondary);">
@@ -89,9 +101,17 @@ applications.{% endblock %}
 </section>
 {% endif %}
 
+{# ===== WAVE DIVIDER: About → Skills ===== #}
+<div class="wave-divider wave-divider-flip" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,30 1440,35 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
+
 {# ===== SKILLS ===== #}
 {% if skill_categories %}
-<section class="section">
+<section class="section" style="position: relative;">
+    <div class="liquid-blob liquid-blob-3" aria-hidden="true" style="top: 20%; right: -5%;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="section-header text-center fade-in">
             <h2 class="section-title">Technical Skills</h2>
@@ -137,6 +157,13 @@ applications.{% endblock %}
 </section>
 {% endif %}
 
+{# ===== WAVE DIVIDER: Skills → Experience ===== #}
+<div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,20 C240,50 480,10 720,35 C960,60 1200,15 1440,40 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
+
 {# ===== EXPERIENCE ===== #}
 {% if experiences %}
 <section class="section" style="background: var(--bg-secondary);">
@@ -152,7 +179,7 @@ applications.{% endblock %}
                 {% for exp in experiences %}
                 <div class="timeline-item fade-in">
                     <div class="timeline-dot {% if exp.is_current %}current{% endif %}"></div>
-                    <div class="card">
+                    <div class="card" data-tilt>
                         <div class="card-body">
                             <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
                                 <div>
@@ -198,9 +225,17 @@ applications.{% endblock %}
 </section>
 {% endif %}
 
+{# ===== WAVE DIVIDER: Experience → Projects ===== #}
+<div class="wave-divider wave-divider-flip" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,20 C240,50 480,10 720,35 C960,60 1200,15 1440,40 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
+
 {# ===== FEATURED PROJECTS ===== #}
 {% if featured_projects %}
-<section class="section">
+<section class="section" style="position: relative;">
+    <div class="liquid-blob liquid-blob-2" aria-hidden="true" style="top: -10%; left: -5%;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="section-header text-center fade-in">
             <h2 class="section-title">Featured Projects</h2>
@@ -224,6 +259,13 @@ applications.{% endblock %}
     </div>
 </section>
 {% endif %}
+
+{# ===== WAVE DIVIDER: Projects → Blog ===== #}
+<div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,30 1440,35 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
 
 {# ===== LATEST BLOG POSTS ===== #}
 {% if latest_posts %}
@@ -252,8 +294,16 @@ applications.{% endblock %}
 </section>
 {% endif %}
 
+{# ===== WAVE DIVIDER: Blog → CTA ===== #}
+<div class="wave-divider wave-divider-flip wave-divider-primary" aria-hidden="true">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,30 1440,35 L1440,60 L0,60 Z"></path>
+    </svg>
+</div>
+
 {# ===== CTA / CONTACT ===== #}
-<section class="section">
+<section class="section cta-section">
+    <div class="liquid-blob liquid-blob-1" aria-hidden="true" style="top: -20%; right: -10%; opacity: 0.15;"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-2xl mx-auto text-center fade-in">
             <h2 class="section-title mb-4">Let's Work Together</h2>

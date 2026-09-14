@@ -1,5 +1,5 @@
 {# Reusable project card — expects `project` in context #}
-<div class="card project-card">
+<div class="card project-card" data-tilt>
     <div class="thumb-wrapper">
         {% if project.thumbnail %}
         <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="project-thumb" loading="lazy">

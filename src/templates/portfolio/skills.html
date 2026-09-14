@@ -4,7 +4,10 @@
 {% block meta_description %}My technical skills and proficiency levels across backend, frontend, databases, DevOps, and more.{% endblock %}
 
 {% block content %}
-<section class="section" style="padding-top: 7rem;">
+<section class="section" style="padding-top: 7rem; position: relative;">
+    <div class="liquid-blob liquid-blob-3" aria-hidden="true" style="top: 10%; right: -8%;"></div>
+    <div class="liquid-blob liquid-blob-2" aria-hidden="true" style="bottom: 5%; left: -10%;"></div>
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="section-header text-center fade-in">
             <h1 class="section-title">Technical Skills</h1>
@@ -16,7 +19,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for category in skill_categories %}
             <div class="fade-in">
-                <div class="card" style="border: 1px solid var(--border-color);">
+                <div class="card" data-tilt>
                     <div class="card-body">
                         <h2 class="font-semibold text-lg mb-4 flex items-center gap-2" style="color: var(--text-primary);">
                             <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background: rgba(252,60,60,0.1); color: var(--color-primary);">

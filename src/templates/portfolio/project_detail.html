@@ -4,7 +4,9 @@
 {% block meta_description %}{{ project.short_description }}{% endblock %}
 
 {% block content %}
-<section class="section" style="padding-top: 7rem;">
+<section class="section" style="padding-top: 7rem; position: relative;">
+    <div class="liquid-blob liquid-blob-1" aria-hidden="true" style="top: -5%; right: -10%; opacity: 0.2;"></div>
+
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {# Breadcrumb #}
         <nav class="mb-6 text-sm fade-in" style="color: var(--text-muted);">
@@ -56,7 +58,7 @@
             <h2 class="text-xl font-bold mb-4" style="color: var(--text-primary);">Screenshots</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 {% for img in project.images.all %}
-                <div class="rounded-lg overflow-hidden" style="border: 1px solid var(--border-color);">
+                <div class="rounded-lg overflow-hidden fade-in" style="border: 1px solid var(--border-color);">
                     <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" class="w-full" loading="lazy">
                     {% if img.caption %}
                     <p class="text-sm px-3 py-2" style="color: var(--text-muted);">{{ img.caption }}</p>

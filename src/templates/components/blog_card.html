@@ -1,5 +1,5 @@
 {# Reusable blog card — expects `post` in context #}
-<div class="card blog-card">
+<div class="card blog-card" data-tilt>
     {% if post.featured_image %}
     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="blog-thumb" loading="lazy">
     {% else %}
