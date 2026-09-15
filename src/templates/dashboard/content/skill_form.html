@@ -1,0 +1,87 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ action_title }}{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Content / Skills /</span> {{ action_title }}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+
+    <div class="admin-card p-6 md:p-8">
+        <div class="flex items-center justify-between pb-6 mb-6 border-b border-white/5">
+            <div>
+                <h3 class="text-lg font-bold font-display text-white">{{ action_title }}</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Manage skill name, category, icon class, and proficiency percentage.</p>
+            </div>
+            <a href="{% url 'dashboard:skill_list' %}" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-gray-300 hover:text-white border border-white/10 transition-colors">
+                &larr; Back to Skills
+            </a>
+        </div>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs space-y-1">
+                {% for err in form.non_field_errors %}
+                <p><i class="fa-solid fa-circle-exclamation mr-1.5"></i> {{ err }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-mono font-medium text-gray-300 mb-1.5">Skill Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<span class="text-[11px] text-red-400 mt-1 block">{{ form.name.errors.0 }}</span>{% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono font-medium text-gray-300 mb-1.5">Category *</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}<span class="text-[11px] text-red-400 mt-1 block">{{ form.category.errors.0 }}</span>{% endif %}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono font-medium text-gray-300 mb-1.5">CSS Icon Class (Devicon or FontAwesome)</label>
+                {{ form.icon_class }}
+                <p class="text-[11px] text-gray-400 mt-1">Leave blank to auto-detect icon from name (e.g. devicon-python-plain, fa-brands fa-docker).</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-mono font-medium text-gray-300 mb-1.5">Proficiency Level (1 - 100)%</label>
+                    {{ form.proficiency }}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono font-medium text-gray-300 mb-1.5">Display Order</label>
+                    {{ form.order }}
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-white/5">
+                <label class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 flex items-start gap-3 cursor-pointer">
+                    <div class="pt-0.5">{{ form.is_active }}</div>
+                    <div>
+                        <span class="block text-xs font-semibold text-white">Active / Visible</span>
+                        <span class="text-[11px] text-gray-400">Display this skill on portfolio website</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="pt-6 border-t border-white/5 flex items-center justify-end gap-3">
+                <a href="{% url 'dashboard:skill_list' %}" class="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-gray-300 hover:text-white transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/20 transition-all">
+                    Save Skill
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

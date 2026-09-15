@@ -1,0 +1,168 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Experience & Education{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Content /</span> Experience &amp; Education
+{% endblock %}
+
+{% block topbar_actions %}
+<div class="flex items-center gap-2">
+    <a href="{% url 'dashboard:experience_create' %}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md shadow-red-600/20 transition-all">
+        <i class="fa-solid fa-plus text-[10px]"></i>
+        <span>Add Experience</span>
+    </a>
+    <a href="{% url 'dashboard:education_create' %}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-medium border border-white/10 transition-all">
+        <i class="fa-solid fa-graduation-cap text-[10px]"></i>
+        <span>Add Education</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Work Experience Section -->
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-base font-bold font-display text-white flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase text-red-500"></i>
+                    <span>Work Experience</span>
+                </h3>
+                <p class="text-xs text-gray-400">Chronological history of employment roles and accomplishments.</p>
+            </div>
+            <a href="{% url 'dashboard:experience_create' %}" class="text-xs text-red-400 hover:text-red-300 font-medium">+ Add Role</a>
+        </div>
+
+        <div class="admin-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 font-mono uppercase text-[10px] tracking-wider">
+                        <tr>
+                            <th class="py-3.5 px-5">Role &amp; Company</th>
+                            <th class="py-3.5 px-5">Location</th>
+                            <th class="py-3.5 px-5">Period / Duration</th>
+                            <th class="py-3.5 px-5">Order</th>
+                            <th class="py-3.5 px-5 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 font-sans">
+                        {% for exp in experiences %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-5">
+                                <div>
+                                    <span class="font-semibold text-white block">{{ exp.job_title }}</span>
+                                    <span class="text-[11px] text-red-400">{{ exp.company_name }}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-5 text-gray-400">
+                                {{ exp.location|default:"—" }}
+                            </td>
+                            <td class="py-4 px-5 font-mono text-[11px] text-gray-300">
+                                {{ exp.start_date|date:"M Y" }} &ndash; {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}
+                                <span class="text-gray-400 block text-[10px]">({{ exp.duration }})</span>
+                            </td>
+                            <td class="py-4 px-5 font-mono text-[11px] text-gray-400">
+                                {{ exp.order }}
+                            </td>
+                            <td class="py-4 px-5 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{% url 'dashboard:experience_edit' exp.id %}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'dashboard:experience_delete' exp.id %}" onsubmit="return confirm('Delete experience at {{ exp.company_name }}?');" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-400 text-xs">
+                                No work experience entries recorded.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="space-y-4 pt-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-base font-bold font-display text-white flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-blue-400"></i>
+                    <span>Academic Education</span>
+                </h3>
+                <p class="text-xs text-gray-400">Degrees, certifications, and educational credentials.</p>
+            </div>
+            <a href="{% url 'dashboard:education_create' %}" class="text-xs text-blue-400 hover:text-blue-300 font-medium">+ Add Degree</a>
+        </div>
+
+        <div class="admin-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 font-mono uppercase text-[10px] tracking-wider">
+                        <tr>
+                            <th class="py-3.5 px-5">Degree &amp; Field</th>
+                            <th class="py-3.5 px-5">Institution</th>
+                            <th class="py-3.5 px-5">Years</th>
+                            <th class="py-3.5 px-5">Order</th>
+                            <th class="py-3.5 px-5 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 font-sans">
+                        {% for edu in educations %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-4 px-5">
+                                <div>
+                                    <span class="font-semibold text-white block">{{ edu.degree }}</span>
+                                    {% if edu.field_of_study %}
+                                    <span class="text-[11px] text-gray-400">{{ edu.field_of_study }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-4 px-5 text-gray-300">
+                                {{ edu.institution }}
+                            </td>
+                            <td class="py-4 px-5 font-mono text-[11px] text-gray-400">
+                                {{ edu.start_year }} &ndash; {{ edu.end_year|default:"Present" }}
+                            </td>
+                            <td class="py-4 px-5 font-mono text-[11px] text-gray-400">
+                                {{ edu.order }}
+                            </td>
+                            <td class="py-4 px-5 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{% url 'dashboard:education_edit' edu.id %}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'dashboard:education_delete' edu.id %}" onsubmit="return confirm('Delete education {{ edu.degree }}?');" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-400 text-xs">
+                                No education entries recorded.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

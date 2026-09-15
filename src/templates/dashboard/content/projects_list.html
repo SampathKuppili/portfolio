@@ -1,0 +1,180 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Projects Management{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Content /</span> Projects
+{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'dashboard:project_create' %}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md shadow-red-600/20 transition-all">
+    <i class="fa-solid fa-plus text-[10px]"></i>
+    <span>Add Project</span>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Filters & Search Toolbar -->
+    <div class="admin-card p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Search Input -->
+        <form method="get" class="flex-1 max-w-md flex items-center gap-2">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-xs">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search project title or summary..."
+                    class="w-full pl-9 pr-4 py-2 bg-[#091116] border border-white/10 rounded-xl text-white text-xs placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors">
+            </div>
+            {% if current_type %}
+            <input type="hidden" name="type" value="{{ current_type }}">
+            {% endif %}
+            <button type="submit" class="px-3 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs border border-white/10 font-medium transition-colors">
+                Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'dashboard:project_list' %}" class="px-3 py-2 text-gray-400 hover:text-white text-xs">Reset</a>
+            {% endif %}
+        </form>
+
+        <!-- Project Type Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+            <a href="{% url 'dashboard:project_list' %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if not current_type %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                All Projects
+            </a>
+            <a href="?type=company{% if search_query %}&q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if current_type == 'company' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                Company
+            </a>
+            <a href="?type=personal{% if search_query %}&q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if current_type == 'personal' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                Personal
+            </a>
+            <a href="?type=wordpress{% if search_query %}&q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if current_type == 'wordpress' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                WordPress
+            </a>
+        </div>
+    </div>
+
+    <!-- Projects Table Card -->
+    <div class="admin-card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-gray-300">
+                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 font-mono uppercase text-[10px] tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-5">Project</th>
+                        <th class="py-3.5 px-5">Type</th>
+                        <th class="py-3.5 px-5">Technologies</th>
+                        <th class="py-3.5 px-5">Featured</th>
+                        <th class="py-3.5 px-5">Status</th>
+                        <th class="py-3.5 px-5">Order</th>
+                        <th class="py-3.5 px-5 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 font-sans">
+                    {% for p in projects %}
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="py-4 px-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-10 rounded-lg bg-slate-800 border border-white/10 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                    {% if p.thumbnail %}
+                                    <img src="{{ p.thumbnail.url }}" alt="{{ p.title }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                    <i class="fa-solid fa-code text-gray-400 text-xs"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="font-semibold text-white block truncate">{{ p.title }}</span>
+                                    <span class="text-[11px] text-gray-400 font-mono">{{ p.slug }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-5">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold {% if p.project_type == 'company' %}bg-blue-500/20 text-blue-300 border border-blue-500/30{% elif p.project_type == 'wordpress' %}bg-purple-500/20 text-purple-300 border border-purple-500/30{% else %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% endif %}">
+                                {{ p.get_project_type_display }}
+                            </span>
+                        </td>
+                        <td class="py-4 px-5">
+                            <div class="flex items-center gap-1 flex-wrap max-w-xs">
+                                {% for tech in p.technologies.all|slice:":3" %}
+                                <span class="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-gray-300 font-mono">{{ tech.name }}</span>
+                                {% empty %}
+                                <span class="text-gray-400 text-[11px]">—</span>
+                                {% endfor %}
+                                {% if p.technologies.count > 3 %}
+                                <span class="text-[10px] text-gray-400 font-mono">+{{ p.technologies.count|add:"-3" }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="py-4 px-5">
+                            {% if p.is_featured %}
+                            <span class="inline-flex items-center gap-1 text-[11px] text-amber-400 font-medium">
+                                <i class="fa-solid fa-star text-[10px]"></i> Yes
+                            </span>
+                            {% else %}
+                            <span class="text-gray-400 text-[11px]">No</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-5">
+                            {% if p.is_active %}
+                            <span class="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1 text-[11px] text-red-400 font-medium">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Inactive
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-5 font-mono text-[11px] text-gray-400">
+                            {{ p.order }}
+                        </td>
+                        <td class="py-4 px-5 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                {% if p.live_url %}
+                                <a href="{{ p.live_url }}" target="_blank" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Visit Live URL">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'dashboard:project_edit' p.id %}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Edit Project">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="{% url 'dashboard:project_delete' p.id %}" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors" title="Delete Project">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-gray-400 text-xs">
+                            No projects match criteria.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-gray-400">
+                Page <strong class="text-white">{{ page_obj.number }}</strong> of <strong class="text-white">{{ page_obj.paginator.num_pages }}</strong>
+            </span>
+            <div class="flex items-center gap-1">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-white font-medium">Previous</a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-white font-medium">Next</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

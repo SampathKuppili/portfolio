@@ -1,0 +1,31 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Delete {{ item_type }}{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Content /</span> Delete Confirmation
+{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-8">
+    <div class="admin-card p-8 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center text-2xl mx-auto mb-4">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+        <h3 class="text-xl font-bold font-display text-white">Delete {{ item_type }}?</h3>
+        <p class="text-xs text-gray-400 mt-2 max-w-md mx-auto leading-relaxed">
+            Are you sure you want to permanently remove <strong class="text-white">{{ item }}</strong>? This action cannot be reversed.
+        </p>
+
+        <form method="post" class="mt-8 flex items-center justify-center gap-3">
+            {% csrf_token %}
+            <a href="{{ cancel_url }}" class="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-gray-300 hover:text-white transition-colors">
+                Cancel
+            </a>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all">
+                Confirm &amp; Delete
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

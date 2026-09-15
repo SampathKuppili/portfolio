@@ -1,0 +1,338 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Overview{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Dashboard /</span> Overview
+{% endblock %}
+
+{% block topbar_actions %}
+<div class="flex items-center gap-2">
+    <a href="{% url 'dashboard:project_create' %}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md shadow-red-600/20 transition-all">
+        <i class="fa-solid fa-plus text-[10px]"></i>
+        <span class="hidden sm:inline">Add Project</span>
+    </a>
+    <a href="{% url 'dashboard:blog_create' %}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-medium border border-white/10 transition-all">
+        <i class="fa-solid fa-pen-nib text-[10px]"></i>
+        <span class="hidden sm:inline">New Post</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- KPI Metric Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Projects Card -->
+        <div class="admin-card p-5 relative overflow-hidden group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Projects</span>
+                    <h3 class="text-2xl font-bold font-display text-white mt-1">{{ total_projects }}</h3>
+                    <p class="text-[11px] text-emerald-400 mt-1 flex items-center gap-1 font-mono">
+                        <i class="fa-solid fa-star text-[10px]"></i>
+                        <span>{{ featured_projects }} Featured</span>
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-xs">
+                <a href="{% url 'dashboard:project_list' %}" class="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
+                    <span>Manage projects</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Blog Posts Card -->
+        <div class="admin-card p-5 relative overflow-hidden group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Blog Posts</span>
+                    <h3 class="text-2xl font-bold font-display text-white mt-1">{{ total_posts }}</h3>
+                    <p class="text-[11px] text-sky-400 mt-1 flex items-center gap-1 font-mono">
+                        <i class="fa-solid fa-eye text-[10px]"></i>
+                        <span>{{ total_views }} Total Views</span>
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-newspaper"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-xs">
+                <a href="{% url 'dashboard:blog_list' %}" class="text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1">
+                    <span>{{ published_posts }} published</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Technical Skills Card -->
+        <div class="admin-card p-5 relative overflow-hidden group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Skills & Certs</span>
+                    <h3 class="text-2xl font-bold font-display text-white mt-1">{{ total_skills }}</h3>
+                    <p class="text-[11px] text-amber-400 mt-1 flex items-center gap-1 font-mono">
+                        <i class="fa-solid fa-award text-[10px]"></i>
+                        <span>{{ total_certs }} Certifications</span>
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-xs">
+                <a href="{% url 'dashboard:skill_list' %}" class="text-amber-400 hover:text-amber-300 font-medium flex items-center gap-1">
+                    <span>Manage skills</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contact Inquiries Card -->
+        <div class="admin-card p-5 relative overflow-hidden group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Inquiries</span>
+                    <h3 class="text-2xl font-bold font-display text-white mt-1">{{ total_contacts }}</h3>
+                    <p class="text-[11px] {% if unread_contacts > 0 %}text-red-400{% else %}text-emerald-400{% endif %} mt-1 flex items-center gap-1 font-mono">
+                        <i class="fa-solid fa-envelope text-[10px]"></i>
+                        <span>{{ unread_contacts }} Unread Messages</span>
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-inbox"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-xs">
+                <a href="{% url 'dashboard:contact_list' %}" class="text-red-400 hover:text-red-300 font-medium flex items-center gap-1">
+                    <span>View inbox</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Visual Overview (Charts Row) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Project Distribution Donut Chart -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Projects by Type</h4>
+                    <p class="text-xs text-gray-400">Distribution across portfolio categories</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 text-xs">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 flex items-center justify-center py-2" style="min-height: 220px;">
+                <canvas id="projectsChart"></canvas>
+            </div>
+            <div class="pt-4 border-t border-white/5 text-center">
+                <a href="{% url 'dashboard:analytics' %}" class="text-xs text-red-400 hover:text-red-300 font-medium">View full analytics report &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Skills Distribution Bar Chart -->
+        <div class="admin-card p-6 lg:col-span-2 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Skills by Category</h4>
+                    <p class="text-xs text-gray-400">Categorized competency breakdown</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 text-xs">
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 py-2" style="min-height: 220px;">
+                <canvas id="skillsChart"></canvas>
+            </div>
+            <div class="pt-4 border-t border-white/5 flex justify-between items-center text-xs text-gray-400">
+                <span>Total tracked skills: <strong class="text-white">{{ total_skills }}</strong></span>
+                <a href="{% url 'dashboard:skill_list' %}" class="text-red-400 hover:text-red-300 font-medium">Manage skills &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Row: Recent Contact Inquiries & Recent Projects -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Recent Contact Inquiries -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-display font-bold text-white text-base">Recent Inquiries</h4>
+                        <p class="text-xs text-gray-400">Latest messages from contact form</p>
+                    </div>
+                </div>
+                <a href="{% url 'dashboard:contact_list' %}" class="text-xs font-medium text-red-400 hover:text-red-300">View All ({{ total_contacts }})</a>
+            </div>
+
+            <div class="space-y-3 flex-1">
+                {% for msg in recent_contacts %}
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex-shrink-0 flex items-center justify-center text-xs font-bold text-white">
+                            {{ msg.name|slice:":1"|upper }}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold text-white truncate">{{ msg.name }}</span>
+                                {% if not msg.is_read %}
+                                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 rounded-full font-mono">NEW</span>
+                                {% endif %}
+                            </div>
+                            <p class="text-[11px] text-gray-400 truncate">{{ msg.subject }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="text-[10px] text-gray-400 font-mono">{{ msg.created_at|date:"M d" }}</span>
+                        <a href="{% url 'dashboard:contact_detail' msg.id %}" class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 text-xs">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="py-8 text-center text-gray-400 text-xs">
+                    <i class="fa-regular fa-envelope-open text-3xl mb-2 text-gray-400"></i>
+                    <p>No contact messages yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Quick Content Actions & Recent Projects -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-display font-bold text-white text-base">Showcase Projects</h4>
+                        <p class="text-xs text-gray-400">Recently updated portfolio items</p>
+                    </div>
+                </div>
+                <a href="{% url 'dashboard:project_list' %}" class="text-xs font-medium text-blue-400 hover:text-blue-300">View All ({{ total_projects }})</a>
+            </div>
+
+            <div class="space-y-3 flex-1">
+                {% for proj in recent_projects %}
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-lg bg-slate-800 border border-white/10 flex-shrink-0 flex items-center justify-center text-xs font-bold text-red-400 overflow-hidden">
+                            {% if proj.thumbnail %}
+                            <img src="{{ proj.thumbnail.url }}" alt="{{ proj.title }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <i class="fa-solid fa-laptop-code"></i>
+                            {% endif %}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold text-white truncate">{{ proj.title }}</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-medium bg-white/5 text-gray-300 rounded border border-white/5">{{ proj.get_project_type_display }}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-400 truncate">{{ proj.short_description }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <a href="{% url 'dashboard:project_edit' proj.id %}" class="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 text-xs">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="py-8 text-center text-gray-400 text-xs">
+                    <i class="fa-solid fa-folder-plus text-3xl mb-2 text-gray-400"></i>
+                    <p>No projects registered.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Project Type Donut Chart
+    const pLabels = JSON.parse('{{ project_chart_labels|escapejs }}');
+    const pValues = JSON.parse('{{ project_chart_values|escapejs }}');
+
+    const ctxP = document.getElementById('projectsChart').getContext('2d');
+    new Chart(ctxP, {
+        type: 'doughnut',
+        data: {
+            labels: pLabels,
+            datasets: [{
+                data: pValues,
+                backgroundColor: [
+                    'rgba(252, 60, 60, 0.85)',
+                    'rgba(59, 130, 246, 0.85)',
+                    'rgba(16, 185, 129, 0.85)',
+                    'rgba(168, 85, 247, 0.85)'
+                ],
+                borderColor: '#070d10',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+
+    // Skills Bar Chart
+    const sLabels = JSON.parse('{{ skill_chart_labels|escapejs }}');
+    const sValues = JSON.parse('{{ skill_chart_values|escapejs }}');
+
+    const ctxS = document.getElementById('skillsChart').getContext('2d');
+    new Chart(ctxS, {
+        type: 'bar',
+        data: {
+            labels: sLabels,
+            datasets: [{
+                label: 'Skills Count',
+                data: sValues,
+                backgroundColor: 'rgba(252, 60, 60, 0.8)',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: { color: '#94a3b8', font: { size: 11 } },
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#94a3b8', stepSize: 1, font: { size: 11 } },
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}

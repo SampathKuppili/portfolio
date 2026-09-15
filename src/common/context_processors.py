@@ -15,7 +15,16 @@ def site_context(request):
     except Exception:
         profile = None
 
+    unread_contacts_count = 0
+    if request.path.startswith('/dashboard/') and getattr(request, 'user', None) and request.user.is_authenticated and request.user.is_staff:
+        try:
+            from contact.models import ContactMessage
+            unread_contacts_count = ContactMessage.objects.filter(is_read=False).count()
+        except Exception:
+            pass
+
     return {
         'site_settings': settings,
         'profile': profile,
+        'unread_contacts_count': unread_contacts_count,
     }

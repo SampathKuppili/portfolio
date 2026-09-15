@@ -1,0 +1,314 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Visual Analytics{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Dashboard /</span> Analytics
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Header info banner -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-xl font-bold font-display text-white">Application Analytics &amp; Visual Metrics</h2>
+            <p class="text-xs text-gray-400 mt-1">Real-time statistics covering audience engagement, portfolio distributions, and system telemetry.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-mono border border-emerald-500/20 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Telemetry</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Quick Stat Chips -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Projects</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_projects }}</div>
+            <span class="text-[10px] text-blue-400">Total showcase</span>
+        </div>
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Articles</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_posts }}</div>
+            <span class="text-[10px] text-purple-400">{{ published_posts }} published</span>
+        </div>
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Article Views</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_views }}</div>
+            <span class="text-[10px] text-sky-400">Total reader views</span>
+        </div>
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Skills</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_skills }}</div>
+            <span class="text-[10px] text-amber-400">Active skills</span>
+        </div>
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Inquiries</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_inquiries }}</div>
+            <span class="text-[10px] text-red-400">{{ unread_inquiries }} unread</span>
+        </div>
+        <div class="admin-card p-4">
+            <span class="text-[10px] font-mono text-gray-400 uppercase">Certifications</span>
+            <div class="text-xl font-bold font-display text-white mt-0.5">{{ total_certs }}</div>
+            <span class="text-[10px] text-emerald-400">Credentials</span>
+        </div>
+    </div>
+
+    <!-- Charts Row 1: Contact Activity & Project Type Distribution -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Inquiries Activity Chart -->
+        <div class="admin-card p-6 lg:col-span-2 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Contact Inquiries Activity</h4>
+                    <p class="text-xs text-gray-400">Incoming messages from prospective clients and collaborators</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 py-2" style="min-height: 250px;">
+                <canvas id="inquiriesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Project Type Breakdown -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Projects Category Share</h4>
+                    <p class="text-xs text-gray-400">Ratio of work types</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 flex items-center justify-center py-2" style="min-height: 250px;">
+                <canvas id="projectTypesChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts Row 2: Skills Proficiency by Category & Top Blog Posts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Skills Distribution & Proficiency -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Skills Count &amp; Average Proficiency</h4>
+                    <p class="text-xs text-gray-400">Technical depth grouped by domain</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 py-2" style="min-height: 250px;">
+                <canvas id="skillsCategoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Top Blog Posts by Views -->
+        <div class="admin-card p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Most Viewed Blog Articles</h4>
+                    <p class="text-xs text-gray-400">Reader traffic and interest</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+            </div>
+            <div class="relative flex-1 py-2" style="min-height: 250px;">
+                <canvas id="blogViewsChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- System Health & Platform Information Card -->
+    <div class="admin-card p-6">
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center text-slate-300 text-sm">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+                <div>
+                    <h4 class="font-display font-bold text-white text-base">Platform &amp; Runtime Environment</h4>
+                    <p class="text-xs text-gray-400">Underlying system infrastructure status</p>
+                </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                All Systems Operational
+            </span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Python Version</span>
+                <span class="text-white font-mono font-semibold mt-1 block">{{ system_info.python_version }}</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Django Framework</span>
+                <span class="text-white font-mono font-semibold mt-1 block">{{ system_info.django_version }}</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Database Size</span>
+                <span class="text-white font-mono font-semibold mt-1 block">{{ system_info.db_size_kb }} KB</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Debug Mode</span>
+                <span class="{% if system_info.debug_mode %}text-amber-400{% else %}text-emerald-400{% endif %} font-mono font-semibold mt-1 block">
+                    {{ system_info.debug_mode|yesno:"Enabled,Disabled" }}
+                </span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Registered Accounts</span>
+                <span class="text-white font-mono font-semibold mt-1 block">{{ system_info.user_count }} users</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <span class="text-gray-400 block text-[10px] font-mono uppercase">Timezone</span>
+                <span class="text-white font-mono font-semibold mt-1 block">{{ system_info.server_tz }}</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Global Chart.js defaults for dark theme
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+
+    // 1. Inquiries Chart (Line)
+    const inqDates = JSON.parse('{{ inquiry_dates|escapejs }}');
+    const inqCounts = JSON.parse('{{ inquiry_counts|escapejs }}');
+
+    new Chart(document.getElementById('inquiriesChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: inqDates,
+            datasets: [{
+                label: 'Inquiries Received',
+                data: inqCounts,
+                borderColor: '#FC3C3C',
+                backgroundColor: 'rgba(252, 60, 60, 0.12)',
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2.5,
+                pointBackgroundColor: '#FC3C3C',
+                pointRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // 2. Project Types (Donut)
+    const pLabels = JSON.parse('{{ project_chart_labels|escapejs }}');
+    const pValues = JSON.parse('{{ project_chart_values|escapejs }}');
+
+    new Chart(document.getElementById('projectTypesChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: pLabels,
+            datasets: [{
+                data: pValues,
+                backgroundColor: [
+                    'rgba(252, 60, 60, 0.85)',
+                    'rgba(59, 130, 246, 0.85)',
+                    'rgba(16, 185, 129, 0.85)',
+                ],
+                borderColor: '#070d10',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+            },
+            cutout: '68%'
+        }
+    });
+
+    // 3. Skills by Category (Bar)
+    const catLabels = JSON.parse('{{ cat_labels|escapejs }}');
+    const catCounts = JSON.parse('{{ cat_counts|escapejs }}');
+    const catAvgProf = JSON.parse('{{ cat_avg_prof|escapejs }}');
+
+    new Chart(document.getElementById('skillsCategoryChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: catLabels,
+            datasets: [
+                {
+                    label: 'Skills Count',
+                    data: catCounts,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'Avg Proficiency (%)',
+                    data: catAvgProf,
+                    backgroundColor: 'rgba(252, 60, 60, 0.8)',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, max: 100 }
+            },
+            plugins: {
+                legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } }
+            }
+        }
+    });
+
+    // 4. Blog Views (Horizontal Bar)
+    const postTitles = JSON.parse('{{ post_titles|escapejs }}');
+    const postViews = JSON.parse('{{ post_views|escapejs }}');
+
+    new Chart(document.getElementById('blogViewsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: postTitles,
+            datasets: [{
+                label: 'Views',
+                data: postViews,
+                backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}

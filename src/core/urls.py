@@ -18,6 +18,9 @@ admin.site.index_title = "Dashboard"
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # Custom Admin Dashboard
+    path('dashboard/', include('dashboard.urls')),
+
     # App URLs
     path('', include('portfolio.urls')),
     path('blog/', include('blog.urls')),

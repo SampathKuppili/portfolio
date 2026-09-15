@@ -1,0 +1,112 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Content Hub{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Content /</span> Hub
+{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <div>
+        <h2 class="text-xl font-bold font-display text-white">Content Management Hub</h2>
+        <p class="text-xs text-gray-400 mt-1">Select a section to create, modify, or archive your portfolio assets and publications.</p>
+    </div>
+
+    <!-- Content Sections Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Projects Card -->
+        <div class="admin-card p-6 flex flex-col justify-between group hover:border-red-500/30 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h3 class="text-base font-bold font-display text-white">Projects</h3>
+                <p class="text-xs text-gray-400 mt-1">Manage showcase portfolio projects, project types (Company, Personal, WordPress), and live URLs.</p>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-blue-500/20 text-blue-300">{{ projects_count }} items</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                <a href="{% url 'dashboard:project_list' %}" class="text-blue-400 hover:text-blue-300 font-medium">Browse &rarr;</a>
+                <a href="{% url 'dashboard:project_create' %}" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium border border-white/5">+ Add</a>
+            </div>
+        </div>
+
+        <!-- Blog Articles Card -->
+        <div class="admin-card p-6 flex flex-col justify-between group hover:border-red-500/30 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-newspaper"></i>
+                </div>
+                <h3 class="text-base font-bold font-display text-white">Blog Articles</h3>
+                <p class="text-xs text-gray-400 mt-1">Write and publish technical articles, tutorials, tags, and track reader engagement.</p>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-purple-500/20 text-purple-300">{{ posts_count }} articles</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                <a href="{% url 'dashboard:blog_list' %}" class="text-purple-400 hover:text-purple-300 font-medium">Browse &rarr;</a>
+                <a href="{% url 'dashboard:blog_create' %}" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium border border-white/5">+ Write</a>
+            </div>
+        </div>
+
+        <!-- Technical Skills Card -->
+        <div class="admin-card p-6 flex flex-col justify-between group hover:border-red-500/30 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h3 class="text-base font-bold font-display text-white">Technical Skills</h3>
+                <p class="text-xs text-gray-400 mt-1">Configure individual tech skills, Devicon / FontAwesome classes, proficiency meters, and categories.</p>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-amber-500/20 text-amber-300">{{ skills_count }} skills</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                <a href="{% url 'dashboard:skill_list' %}" class="text-amber-400 hover:text-amber-300 font-medium">Browse &rarr;</a>
+                <a href="{% url 'dashboard:skill_create' %}" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium border border-white/5">+ Add</a>
+            </div>
+        </div>
+
+        <!-- Certifications Card -->
+        <div class="admin-card p-6 flex flex-col justify-between group hover:border-red-500/30 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <h3 class="text-base font-bold font-display text-white">Certifications</h3>
+                <p class="text-xs text-gray-400 mt-1">Manage professional credentials, badges, certificate images, and issuing organizations.</p>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-500/20 text-emerald-300">{{ certs_count }} credentials</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                <a href="{% url 'dashboard:cert_list' %}" class="text-emerald-400 hover:text-emerald-300 font-medium">Browse &rarr;</a>
+                <a href="{% url 'dashboard:cert_create' %}" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium border border-white/5">+ Add</a>
+            </div>
+        </div>
+
+        <!-- Experience & Education Card -->
+        <div class="admin-card p-6 flex flex-col justify-between group hover:border-red-500/30 transition-all">
+            <div>
+                <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <h3 class="text-base font-bold font-display text-white">Experience &amp; Education</h3>
+                <p class="text-xs text-gray-400 mt-1">Maintain your professional timeline, company roles, achievements, and university degrees.</p>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-red-500/20 text-red-300">{{ exp_count }} exp &bull; {{ edu_count }} edu</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
+                <a href="{% url 'dashboard:experience_list' %}" class="text-red-400 hover:text-red-300 font-medium">Manage &rarr;</a>
+                <a href="{% url 'dashboard:experience_create' %}" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium border border-white/5">+ Add</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

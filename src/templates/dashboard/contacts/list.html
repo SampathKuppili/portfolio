@@ -1,0 +1,153 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Contact Inquiries{% endblock %}
+{% block header_title %}
+<span class="text-gray-400 font-normal">Administration /</span> Contact Inquiries
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Filters & Search Toolbar -->
+    <div class="admin-card p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Search Form -->
+        <form method="get" class="flex-1 max-w-md flex items-center gap-2">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-xs">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search sender, email, subject..."
+                    class="w-full pl-9 pr-4 py-2 bg-[#091116] border border-white/10 rounded-xl text-white text-xs placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors">
+            </div>
+            {% if current_status %}
+            <input type="hidden" name="status" value="{{ current_status }}">
+            {% endif %}
+            <button type="submit" class="px-3 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs border border-white/10 font-medium transition-colors">
+                Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'dashboard:contact_list' %}" class="px-3 py-2 text-gray-400 hover:text-white text-xs">Reset</a>
+            {% endif %}
+        </form>
+
+        <!-- Status Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+            <a href="{% url 'dashboard:contact_list' %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if not current_status %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                All Messages
+            </a>
+            <a href="?status=unread{% if search_query %}&q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 {% if current_status == 'unread' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                <span>Unread</span>
+                {% if unread_count > 0 %}
+                <span class="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-red-500 text-white font-mono">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+            <a href="?status=read{% if search_query %}&q={{ search_query }}{% endif %}"
+                class="px-3 py-1 rounded-lg text-xs font-medium transition-colors {% if current_status == 'read' %}bg-red-500/20 text-red-300 border border-red-500/30{% else %}bg-white/5 text-gray-400 hover:text-white border border-white/5{% endif %}">
+                Read
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages Inbox Table -->
+    <div class="admin-card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-gray-300">
+                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 font-mono uppercase text-[10px] tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-5">Sender</th>
+                        <th class="py-3.5 px-5">Subject &amp; Snippet</th>
+                        <th class="py-3.5 px-5">Status</th>
+                        <th class="py-3.5 px-5">Date Received</th>
+                        <th class="py-3.5 px-5 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 font-sans">
+                    {% for msg in contact_messages %}
+                    <tr class="hover:bg-white/[0.02] transition-colors {% if not msg.is_read %}bg-red-500/[0.03]{% endif %}">
+                        <td class="py-4 px-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-slate-800 border {% if not msg.is_read %}border-red-500/50 text-red-400{% else %}border-white/10 text-gray-400{% endif %} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    {{ msg.name|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-white block">{{ msg.name }}</span>
+                                    <a href="mailto:{{ msg.email }}" class="text-[11px] text-gray-400 hover:text-red-400 font-mono">{{ msg.email }}</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-5 max-w-md">
+                            <a href="{% url 'dashboard:contact_detail' msg.id %}" class="group block">
+                                <span class="font-medium text-white group-hover:text-red-400 transition-colors block truncate">{{ msg.subject }}</span>
+                                <span class="text-[11px] text-gray-400 block truncate mt-0.5">{{ msg.message|truncatechars:80 }}</span>
+                            </a>
+                        </td>
+                        <td class="py-4 px-5">
+                            {% if not msg.is_read %}
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 font-mono">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span> UNREAD
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1.5 text-[11px] text-gray-400">
+                                <i class="fa-solid fa-check text-[10px]"></i> Read
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-5 font-mono text-[11px] text-gray-400">
+                            {{ msg.created_at|date:"M d, Y H:i" }}
+                        </td>
+                        <td class="py-4 px-5 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{% url 'dashboard:contact_detail' msg.id %}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="Read Message">
+                                    <i class="fa-solid fa-envelope-open"></i>
+                                </a>
+                                <form method="post" action="{% url 'dashboard:contact_toggle_read' msg.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors" title="{% if msg.is_read %}Mark as Unread{% else %}Mark as Read{% endif %}">
+                                        <i class="fa-solid {% if msg.is_read %}fa-envelope{% else %}fa-check{% endif %}"></i>
+                                    </button>
+                                </form>
+                                <a href="mailto:{{ msg.email }}?subject=Re: {{ msg.subject|urlencode }}" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 transition-colors" title="Reply via Email">
+                                    <i class="fa-solid fa-reply"></i>
+                                </a>
+                                <form method="post" action="{% url 'dashboard:contact_delete' msg.id %}" onsubmit="return confirm('Delete message from {{ msg.name }}?');" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors" title="Delete Message">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-12 text-center text-gray-400 text-xs">
+                            <i class="fa-regular fa-folder-open text-3xl mb-2 text-gray-400"></i>
+                            <p>No contact inquiries in this folder.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between text-xs">
+            <span class="text-gray-400">
+                Page <strong class="text-white">{{ page_obj.number }}</strong> of <strong class="text-white">{{ page_obj.paginator.num_pages }}</strong>
+            </span>
+            <div class="flex items-center gap-1">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}" class="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-white font-medium">Previous</a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}" class="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-lg text-white font-medium">Next</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
